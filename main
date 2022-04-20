@@ -1,0 +1,63 @@
+const BMW_TYPE_HUMAN = 0;
+const BMW_TYPE_CAT = 1;
+const BMW_TYPE_PIGEON = 2;
+const BMW_TYPE_BOX = 3; // (for debug)
+
+class BMWalker {
+  // Constructor
+  constructor(type = BMW_TYPE_HUMAN) {
+    // External variables
+    // Boundary values
+    this.maxSpeed = 2.0;
+    this.minSpeed = -2.0;
+    this.maxBodyStructure = 6.0; // Type A
+    this.minBodyStructure = -6.0; // Type B
+    this.maxWeight = 6.0; // Heavy
+    this.minWeight = -6.0; // Light
+    this.maxNervousness = 6.0; // Nervous
+    this.minNervousness = -6.0; // Relaxed
+    this.maxHappiness = 6.0; // Happy
+    this.minHappiness = -6.0; // Sad
+
+    // Internal variables
+    this.type = type;
+
+    this.tm = new BMWTimer();
+    this.starttime = this.tm.getTimer();
+
+    this.mtrx = new BMWMatrix();
+
+    // Walker Parameters
+    this.speed = 1.0;
+    this.bodyStructure = 0;
+    this.weight = 0;
+    this.nervousness = 0;
+    this.happiness = 0;
+
+    // Camera Parameters
+    this.azimuth = 0; // rad
+    this.angularVelocity = 0; // rad/sec
+    this.elevation = 0; // rad
+    this.roll = 0; // rad
+
+    // Translation Parameters
+    this.flagTranslation = false;
+    this.translation_pos = 0;
+
+    this.walker_size = 10;
+
+    // 35 is the exactly correct ratio but need offsetY in this case.
+    this.walkerHeightRatio = 40;
+    //graphical stuff
+    this.motion_vertical_scale = 1;
+    this.motion_horizontal_scale = 1;
+    this.structure_vertical_scale = 1;
+    this.structure_horizontal_scale = 1;
+
+    // Each data
+    const walkerData = new BMWData();
+    this.meanwalker = walkerData.meanwalker;
+    this.bodyStructureaxis = walkerData.bodyStructureaxis;
+    this.weightaxis = walkerData.weightaxis;
+    this.nervousaxis = walkerData.nervousaxis;
+    this.happyaxis = walkerData.happyaxis;
