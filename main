@@ -61,3 +61,52 @@ class BMWalker {
     this.weightaxis = walkerData.weightaxis;
     this.nervousaxis = walkerData.nervousaxis;
     this.happyaxis = walkerData.happyaxis;
+ //camera variables
+    this.camera_distance = 1000;
+
+    this.walker_rot_xaxis = 0;
+    this.walker_rot_yaxis = 0;
+    this.walker_rot_zaxis = 0;
+
+    this.walker_translation_speed = 0;
+
+    this.walkerxmin = 0;
+    this.walkerymin = 0;
+    this.walkerzmin = 0;
+    this.walkerxmax = 0;
+    this.walkerymax = 0;
+    this.walkerzmax = 0;
+    this.walkerxoff = 0;
+    this.walkeryoff = 0;
+    this.walkerzoff = 0;
+    this.walkersizefactor = 0;
+
+    this.axisrot = 0;
+    this.nummarkers = 0;
+
+    this.markers = [];
+    this.vectors = [];
+
+    this.init();
+  }
+  
+  getVectors(_scale = 1){
+    let vs = [];
+    // ここでマイナスにしちゃう
+    for(let v of this.vectors){
+      vs.push({x:v.x * _scale, y:-v.y * _scale, z:v.z * _scale});
+    }
+    return vs;
+  }
+
+  // API: Get markers
+  getMarkers(walkerHeight, tmsec = undefined) {
+    const markers = []; // return value
+    this.vectors = [];
+
+    this.walker_size = walkerHeight / this.walkerHeightRatio;
+
+    if (tmsec === undefined) {
+      tmsec = this.tm.getTimer() - this.starttime;
+    }
+    // console.log(tmsec);
