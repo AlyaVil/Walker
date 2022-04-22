@@ -110,3 +110,54 @@ class BMWalker {
       tmsec = this.tm.getTimer() - this.starttime;
     }
     // console.log(tmsec);
+    }
+    // Translation calculation
+    if (this.flagTranslation && this.type === BMW_TYPE_HUMAN) {
+      this.translation_pos = Math.round((this.getTranslationSpeed() * 120 * tmsec) / 1000);
+    } else {
+      this.translation_pos = 0;
+    }
+
+    // Calculate marker positions
+    for (i = 0; i < this.nummarkers * 3 + 1; i++) {
+      this.markers[i] = this.sample(i, walkertime, true);
+    }
+
+    let matrix = this.mtrx.rotateaxis(
+      -this.axisrot,
+      this.walker_rot_xaxis,
+      this.walker_rot_yaxis,
+      this.walker_rot_zaxis
+    );
+
+    matrix = this.mtrx.multmatrix(this.mtrx.translate(this.translation_pos, 0, 0), matrix);
+
+    const angularVelocity = this.flagTranslation ? 0 : this.angularVelocity;
+    matrix = this.mtrx.multmatrix(
+      this.mtrx.rotateaxis(this.azimuth + (tmsec * angularVelocity) / 1000, 0, 0, 1),
+      matrix
+    );
+
+    matrix = this.mtrx.multmatrix(this.mtrx.rotateY(this.elevation), matrix);
+    matrix = this.mtrx.multmatrix(this.mtrx.rotateX(this.roll), matrix);
+
+    for (i = 0; i < this.nummarkers; i++) {
+      const vector = new Array(4);
+      vector[0] = this.markers[i] + this.walkerxoff;
+      vector[1] =
+        this.markers[i + this.nummarkers] + this.walkeryoff * this.structure_vertical_scale;
+      vector[2] = this.markers[i + this.nummarkers * 2] + this.walkerzoff;
+      vector[3] = 1;
+      
+      this.vectors.push({x:vector[0], y:vector[1], z:vector[2]});
+
+      const v2 = this.mtrx.multmatrixvector(matrix, vector);
+      v2[0] -= this.camera_distance;
+      v2[3] = 1;
+
+      //nudge up
+      const pixelsperdegree = 37;
+      const xpos = (v2[1] / this.walkersizefactor) * this.walker_size * pixelsperdegree;
+      const ypos = -(v2[2] / this.walkersizefactor) * this.walker_size * pixelsperdegree;
+      // console.log(xpos, ypos);
+
