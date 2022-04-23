@@ -161,3 +161,65 @@ class BMWalker {
       const ypos = -(v2[2] / this.walkersizefactor) * this.walker_size * pixelsperdegree;
       // console.log(xpos, ypos);
 
+ const descs = [
+        'Head',
+        'Clavicles',
+        'L-Shoulder',
+        'L-Elbow',
+        'L-Hand',
+        'R-Shoulder',
+        'R-Elbow',
+        'R-Hand',
+        'Belly',
+        'L-Hip',
+        'L-Knee',
+        'L-Ankle',
+        'R-Hip',
+        'R-Knee',
+        'R-Ankle',
+      ];
+      markers.push({ x: xpos, y: ypos, desc: descs[i] });
+    }
+
+    return markers;
+  }
+
+  // API: Get markers that make up the line.
+  getLineMarkers(walkerHeight, tmsec = undefined) {
+    const markers = this.getMarkers(walkerHeight, tmsec);
+    const lineMarkers = [];
+    let idxsArray = [];
+    if(this.type == 0){
+    idxsArray.push(...[
+      [0, 1],
+      [1, 2],
+      [2, 3],
+      [3, 4],
+      [1, 5],
+      [5, 6],
+      [6, 7],
+      [1, 8],
+      [8, 9],
+      [9, 10],
+      [10, 11],
+      [8, 12],
+      [12, 13],
+      [13, 14],
+    ]);}else if(this.type == 1){
+      idxsArray.push(...[[0,1],[1,2],[15,16],[16,17],[12,13],[13,14],[5,6],[6,7],[11,8],[8,10],[9,3],[3,4],[4,10]]);
+    }else if(this.type == 2){
+      idxsArray.push(...[[0,1],[1,2],[2,0],[3,4],[4,5],[5,6],[6,3],[7,8],[9,10]]);
+    }else if(this.type == 3){
+      idxsArray.push(...[[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]]);
+    }
+    idxsArray.forEach((idxs) => {
+      const i0 = idxs[0];
+      const i1 = idxs[1];
+
+      lineMarkers.push([
+        { x: markers[i0].x, y: markers[i0].y, i: i0 },
+        { x: markers[i1].x, y: markers[i1].y, i: i1 },
+      ]);
+    });
+    
+    
