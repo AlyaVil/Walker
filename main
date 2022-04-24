@@ -222,4 +222,50 @@ class BMWalker {
       ]);
     });
     
-    
+     return lineMarkers;
+  }
+
+  // API: Set speed
+  setSpeed(speed = 1.0) {
+    const freq = this.getFrequency();
+    // avoid 0 divisor
+    if (speed === 0) {
+      speed += 0.001;
+    }
+    this.speed = this.clamp(this.minSpeed, this.maxSpeed, speed);
+
+    this.init();
+    let difffreq = freq / this.getFrequency();
+    // avoid 0 divisor
+    if (abs(difffreq) < 0.005) {
+      difffreq += 0.01;
+    }
+    const t = this.tm.getTimer();
+    this.starttime = t - (t - this.starttime) / difffreq;
+    // console.log(freq, difffreq, t, this.starttime);
+  }
+
+  // API: Set parameters on walker
+  setWalkerParam(bodyStructure, weight, nervousness, happiness) {
+    const freq = this.getFrequency();
+
+    // Body Structure Parameter
+    if (bodyStructure !== undefined) {
+      this.bodyStructure = this.clamp(this.minBodyStructure, this.maxBodyStructure, bodyStructure);
+    }
+
+    // Weight Parameter
+    if (weight !== undefined) {
+      this.weight = this.clamp(this.minWeight, this.maxWeight, weight);
+    }
+
+    // Nervousness Parameter
+    if (nervousness !== undefined) {
+      this.nervousness = this.clamp(this.minNervousness, this.maxNervousness, nervousness);
+    }
+
+    // Happiness Parameter
+    if (happiness !== undefined) {
+      this.happiness = this.clamp(this.minHappiness, this.maxHappiness, happiness);
+    }
+
