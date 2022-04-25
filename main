@@ -269,3 +269,53 @@ class BMWalker {
       this.happiness = this.clamp(this.minHappiness, this.maxHappiness, happiness);
     }
 
+  this.init();
+    let difffreq = freq / this.getFrequency();
+    // avoid 0 divisor
+    if (abs(difffreq) < 0.005) {
+      difffreq += 0.01;
+    }
+    const t = this.tm.getTimer();
+    this.starttime = t - (t - this.starttime) / difffreq;
+  }
+
+  // API: Set parameters on camera
+  setCameraParam(azimuth, angularVelocity, elevation, roll) {
+    // Camera azimuth(rotation) Parameter
+    if (azimuth !== undefined) {
+      this.azimuth = azimuth;
+    }
+
+    // Camera angular velocity(rotation speed) Parameter
+    if (angularVelocity !== undefined) {
+      this.angularVelocity = angularVelocity;
+    }
+
+    // Camera elevation Parameter
+    if (elevation !== undefined) {
+      this.elevation = elevation;
+    }
+
+    // Camera roll Parameter
+    if (roll !== undefined) {
+      this.roll = roll;
+    }
+  }
+
+  // API: Set parameters on translation
+  setTranslationParam(flagTranslation) {
+    if (flagTranslation !== undefined) {
+      this.flagTranslation = flagTranslation;
+    }
+  }
+
+  // API: Reset timer value
+  resetTimer() {
+    this.starttime = this.tm.getTimer();
+    this.init();
+  }
+
+  // ----- Internal methods
+  clamp(min, max, val) {
+    return Math.min(max, Math.max(min, val));
+  }
