@@ -319,3 +319,55 @@ class BMWalker {
   clamp(min, max, val) {
     return Math.min(max, Math.max(min, val));
   }
+ init() {
+    this.nummarkers = (this.meanwalker[this.type].length / 5 - 1) / 3;
+    this.markers = new Array(this.nummarkers * 3);
+    this.recalc_angle();
+    this.calcsize();
+    this.walker_translation_speed = this.calcTranslationSpeed();
+  }
+
+  recalc_angle() {
+    const res = this.mtrx.angleBetween(0, 0, 1, 0, 0, 1);
+    this.walker_rot_xaxis = res[0];
+    this.walker_rot_yaxis = res[1];
+    this.walker_rot_zaxis = res[2];
+    this.axisrot = res[3];
+  }
+
+  calcsize() {
+    let n;
+
+    // Calc min/max of x, y, z.
+    for (n = 0; n < this.nummarkers; n++) {
+      this.walkerxmin = Math.min(this.walkerxmin, this.meanwalker[this.type][n]);
+      this.walkerxmax = Math.max(this.walkerxmax, this.meanwalker[this.type][n]);
+    }
+    for (n = this.nummarkers; n < this.nummarkers * 2; n++) {
+      this.walkerymin = Math.min(this.walkerymin, this.meanwalker[this.type][n]);
+      this.walkerymax = Math.max(this.walkerymax, this.meanwalker[this.type][n]);
+    }
+    for (n = this.nummarkers * 2; n < this.nummarkers * 3; n++) {
+      this.walkerzmin = Math.min(this.walkerzmin, this.meanwalker[this.type][n]);
+      this.walkerzmax = Math.max(this.walkerzmax, this.meanwalker[this.type][n]);
+    }
+
+    // The walker height in mm. Used later on to scale it to the desired size in degrees.
+    this.walkersizefactor = this.walkerzmax - this.walkerzmin;
+
+    this.walkerxoff = -(this.walkerxmax + this.walkerxmin) / 2;
+    this.walkeryoff = -(this.walkerymax + this.walkerymin) / 2;
+    this.walkerzoff = -(this.walkerzmax + this.walkerzmin) / 2;
+  } // end of calsize()
+
+  sample(i, walkertime, includeStructure) {
+    let initialpos = this.meanwalker[this.type][i];
+
+    if (includeStructure) {
+      if (this.type === BMW_TYPE_HUMAN) {
+        initialpos +=
+          this.bodyStructureaxis[i] * this.bodyStructure +
+          this.weightaxis[i] * this.weight +
+          this.nervousaxis[i] * this.nervousness +
+          this.happyaxis[i] * this.happiness;
+      }
