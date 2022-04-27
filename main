@@ -371,3 +371,52 @@ class BMWalker {
           this.nervousaxis[i] * this.nervousness +
           this.happyaxis[i] * this.happiness;
       }
+ //invert or scale structure
+      if (i >= this.nummarkers * 2 && i < this.nummarkers * 3)
+        initialpos *= this.structure_vertical_scale;
+      else initialpos *= this.structure_horizontal_scale;
+    } else {
+      initialpos = 0;
+    }
+
+    //motion!
+    let motionpos = 0;
+    const j = this.nummarkers * 3 + 1;
+
+    if (this.type === BMW_TYPE_HUMAN) {
+      const b = this.bodyStructure;
+      const w = this.weight;
+      const n = this.nervousness;
+      const h = this.happiness;
+      motionpos =
+        (this.meanwalker[this.type][i + j] +
+          this.bodyStructureaxis[i + j] * b +
+          this.weightaxis[i + j] * w +
+          this.nervousaxis[i + j] * n +
+          this.happyaxis[i + j] * h) *
+          Math.sin(walkertime) +
+        (this.meanwalker[this.type][i + j * 2] +
+          this.bodyStructureaxis[i + j * 2] * b +
+          this.weightaxis[i + j * 2] * w +
+          this.nervousaxis[i + j * 2] * n +
+          this.happyaxis[i + j * 2] * h) *
+          Math.cos(walkertime) +
+        (this.meanwalker[this.type][i + j * 3] +
+          this.bodyStructureaxis[i + j * 3] * b +
+          this.weightaxis[i + j * 3] * w +
+          this.nervousaxis[i + j * 3] * n +
+          this.happyaxis[i + j * 3] * h) *
+          Math.sin(2 * walkertime) +
+        (this.meanwalker[this.type][i + j * 4] +
+          this.bodyStructureaxis[i + j * 4] * b +
+          this.weightaxis[i + j * 4] * w +
+          this.nervousaxis[i + j * 4] * n +
+          this.happyaxis[i + j * 4] * h) *
+          Math.cos(2 * walkertime);
+    } else {
+      motionpos =
+        this.meanwalker[this.type][i + j] * Math.sin(walkertime) +
+        this.meanwalker[this.type][i + j * 2] * Math.cos(walkertime) +
+        this.meanwalker[this.type][i + j * 3] * Math.sin(2 * walkertime) +
+        this.meanwalker[this.type][i + j * 4] * Math.cos(2 * walkertime);
+    }
