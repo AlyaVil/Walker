@@ -420,3 +420,53 @@ class BMWalker {
         this.meanwalker[this.type][i + j * 3] * Math.sin(2 * walkertime) +
         this.meanwalker[this.type][i + j * 4] * Math.cos(2 * walkertime);
     }
+  if (i >= this.nummarkers * 2 && i < this.nummarkers * 3)
+      motionpos *= this.motion_vertical_scale;
+    else motionpos *= this.motion_horizontal_scale;
+    return initialpos + motionpos;
+  }
+
+  getFrequency() {
+    const i = this.nummarkers * 3;
+    let speed = this.meanwalker[this.type][i];
+
+    if (this.type === BMW_TYPE_HUMAN) {
+      speed += this.bodyStructure * this.bodyStructureaxis[i];
+      speed += this.weight * this.weightaxis[i];
+      speed += this.nervousness * this.nervousaxis[i];
+      speed += this.happiness * this.happyaxis[i];
+    }
+
+    return speed / this.speed;
+  }
+
+  calcTranslationSpeed() {
+    const i = (this.nummarkers * 3 + 1) * 3 - 1;
+    let tspeed = this.meanwalker[this.type][i];
+
+    if (this.type === BMW_TYPE_HUMAN) {
+      tspeed += this.bodyStructure * this.bodyStructureaxis[i];
+      tspeed += this.weight * this.weightaxis[i];
+      tspeed += this.nervousness * this.nervousaxis[i];
+      tspeed += this.happiness * this.happyaxis[i];
+    }
+
+    return tspeed * 120;
+  }
+
+  getTranslationSpeed() {
+    return this.speed * (this.walker_translation_speed / 120);
+  }
+
+  calcTime(curtime) {
+    return ((curtime * 2 * Math.PI) / 1000) * (120 / this.getFrequency());
+  }
+}
+
+// Simple Timer class
+class BMWTimer {
+  // Constructor
+  constructor() {
+    const d = new Date().valueOf();
+    this.time = d;
+    this.start = d;
