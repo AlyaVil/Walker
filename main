@@ -470,3 +470,56 @@ class BMWTimer {
     const d = new Date().valueOf();
     this.time = d;
     this.start = d;
+ const precision = 10; // 10msec
+    setInterval(
+      function () {
+        this.time += precision;
+      }.bind(this),
+      precision
+    );
+  }
+
+  getTimer() {
+    return this.time - this.start;
+  }
+}
+
+//// Matrix calculation
+class BMWMatrix {
+  constructor() {}
+
+  newMatrix() {
+    const m = [new Array(4), new Array(4), new Array(4), new Array(4)];
+    return m;
+  }
+
+  // Identity matrix
+  newIdentMatrix() {
+    const m = [
+      [1, 0, 0, 0],
+      [0, 1, 0, 0],
+      [0, 0, 1, 0],
+      [0, 0, 0, 1],
+    ];
+    return m;
+  }
+
+  rotateY(angle) {
+    const m = [
+      [Math.cos(angle), 0, Math.sin(angle), 0],
+      [0, 1, 0, 0],
+      [-Math.sin(angle), 0, Math.cos(angle), 0],
+      [0, 0, 0, 1],
+    ];
+    return m;
+  }
+
+  rotateX(angle) {
+    const m = [
+      [1, 0, 0, 0],
+      [0, Math.cos(angle), -Math.sin(angle), 0],
+      [0, Math.sin(angle), Math.cos(angle), 0],
+      [0, 0, 0, 1],
+    ];
+    return m;
+  }
