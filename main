@@ -523,3 +523,51 @@ class BMWMatrix {
     ];
     return m;
   }
+ rotateZ(angle) {
+    const m = [
+      [Math.cos(angle), Math.sin(angle), 0, 0],
+      [-Math.sin(angle), Math.cos(angle), 0, 0],
+      [0, 0, 1, 0],
+      [0, 0, 0, 1],
+    ];
+    return m;
+  }
+
+  perspective(zfar) {
+    const znear = 1;
+    const f = zfar;
+    const m = [
+      [(zfar + znear) / (znear - zfar), (2 * zfar * znear) / (znear - zfar), 0, 0],
+      [0, f, 0, 0],
+      [0, 0, f, 0],
+      [-1, 0, 0, 0],
+    ];
+    return m;
+  }
+
+  translate(tx, ty, tz) {
+    const m = [
+      [1, 0, 0, tx],
+      [0, 1, 0, ty],
+      [0, 0, 1, tz],
+      [0, 0, 0, 1],
+    ];
+    return m;
+  }
+
+  rotateaxis(angle, rx, ry, rz) {
+    const c = Math.cos(angle);
+    const s = Math.sin(angle);
+
+    const len = Math.sqrt(rx * rx + ry * ry + rz * rz);
+    rx = rx / len;
+    ry = ry / len;
+    rz = rz / len;
+    const m = [
+      [rx * rx * (1 - c) + c, rx * ry * (1 - c) - rz * s, rx * rz * (1 - c) + ry * s, 0],
+      [ry * rx * (1 - c) + rz * s, ry * ry * (1 - c) + c, ry * rz * (1 - c) - rx * s, 0],
+      [rz * rx * (1 - c) - ry * s, rz * ry * (1 - c) + rx * s, rz * rz * (1 - c) + c, 0],
+      [0, 0, 0, 1],
+    ];
+    return m;
+  }
