@@ -613,3 +613,58 @@ class BMWMatrix {
     for (let i = 0; i < 4; i++) {
       v2[i] = 0;
     }
+ for (let r = 0; r < 4; r++) {
+      for (i = 0; i < 4; i++) {
+        v2[r] += m[i][r] * v[i];
+      }
+    }
+    return v2;
+  }
+
+  dotProd(x1, y1, z1, x2, y2, z2) {
+    return x1 * x2 + y1 * y2 + z1 * z2;
+  }
+
+  angleBetween(x1, y1, z1, x2, y2, z2) {
+    const axislen1 = Math.sqrt(x1 * x1 + y1 * y1 + z1 * z1);
+    const axislen2 = Math.sqrt(x2 * x2 + y2 * y2 + z2 * z2);
+
+    let angle = Math.acos(this.dotProd(x1, y1, z1, x2, y2, z2) / (axislen1 * axislen2));
+
+    if (Math.abs(angle) < 0.0001) return [0, 0, 1, 0];
+    if (angle > PI) {
+      angle = -(TAU - angle);
+    }
+
+    //cross product
+    const x3 = y1 * z2 - z1 * y2;
+    const y3 = z1 * x2 - x1 * z2;
+    const z3 = x1 * y2 - y1 * x2;
+
+    return [x3, y3, z3, angle];
+  }
+}
+
+// Walker data class
+class BMWData {
+  // Constructor
+  constructor() {
+    this.meanwalker = new Array(4);
+    this.meanwalker[0] = new Array(
+      -10.7519,
+      -3.7275,
+      -16.4667,
+      -65.2177,
+      44.6613,
+      -16.4667,
+      -65.2177,
+      44.6613,
+      17.761,
+      15.8663,
+      74.7274,
+      -52.4475,
+      15.8663,
+      74.7274,
+      -52.4475,
+      0.0,
+      0.0,
