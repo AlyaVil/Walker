@@ -94,3 +94,56 @@ let gui;
 
 function startGUI(){
   gui = new dat.GUI({ width:240 });
+ let walkerFolder = gui.addFolder('Walker');
+  const step = 0.1;
+  walkerFolder.add(config, 'sizeFactor', 0.1, 2, 0.05);
+  walkerFolder.add(config, 'speed', bmw.minSpeed, bmw.maxSpeed, step);
+  walkerFolder.add(config, 'bodyStructure', bmw.minBodyStructure, bmw.maxBodyStructure, step);
+  walkerFolder.add(config, 'weight', bmw.minWeight, bmw.maxWeight, step);
+  walkerFolder.add(config, 'nervousness', bmw.minNervousness, bmw.maxNervousness, step);
+  walkerFolder.add(config, 'happiness', bmw.minHappiness, bmw.maxHappiness, step);
+  
+  let canvasFolder = gui.addFolder('Canvas');
+  canvasFolder.add(config, 'dot');
+  canvasFolder.add(config, 'dotSize', 0, 40, 1);
+  canvasFolder.add(config, 'description');
+  canvasFolder.add(config, 'line');
+	//canvasFolder.add(config, 'saver');
+  
+  gui.add({fun:initializeSettings}, 'fun').name('reset');
+	gui.add(config, 'saver').name('Save Screenshot');
+}
+
+// Setting values for dat GUI
+
+const walkerSettingsDefault = {
+  sizeFactor: 1,
+  speed: 1.0,
+  bodyStructure: 0.0,
+  weight: 0.0,
+  nervousness: 0.0,
+  happiness: 0.0,
+};
+
+const canvasSettingsDefault = {
+  dot: true,
+  dotSize: 20,
+  description: false,
+  line: true,
+};
+
+// Initialize with default values
+const initializeSettings = () => {
+  config.sizeFactor = walkerSettingsDefault.sizeFactor;
+  config.speed = walkerSettingsDefault.speed;
+  config.bodyStructure = walkerSettingsDefault.bodyStructure;
+  config.weight = walkerSettingsDefault.weight;
+  config.nervousness = walkerSettingsDefault.nervousness;
+  config.happiness = walkerSettingsDefault.happiness;
+
+  config.dot = canvasSettingsDefault.dot;
+  config.description = canvasSettingsDefault.description;
+  config.dotSize = canvasSettingsDefault.dotSize;
+  config.line = canvasSettingsDefault.line;
+  
+  gui.updateDisplay(); 
