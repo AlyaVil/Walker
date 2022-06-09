@@ -147,3 +147,65 @@ const initializeSettings = () => {
   config.line = canvasSettingsDefault.line;
   
   gui.updateDisplay(); 
+  
+  };
+  let posR = 600*Math.sqrt(3);
+let defaultPosR = 600 * Math.sqrt(3); 
+let posTheta = Math.PI * 0.4;
+let posPhi = Math.PI*0.66;
+let focusX = 0;
+let focusY = 0;
+let eyeVector, toCenterVector, sideVector, upVector;
+
+let gl;
+let _gl;
+
+// p5.js Sketch
+function setup() {
+  // On p5.js canvas
+  _gl = createCanvas(1112, 834, WEBGL);
+  gl = _gl.GL;
+
+  pixelDensity(1);
+
+  // Prepare GUI
+  startGUI();
+  
+  myShader = createShader(vs, fs);
+  myShader.isPointShader = () => true;
+  _gl.userPointShader = myShader;
+  
+  let mks = bmw.getMarkers(); 
+  gr = createGraphics(1800,1800);
+  gr.noStroke();
+  gr.fill(255);
+  gr.textAlign(CENTER, CENTER);
+  gr.textSize(60);
+  for(i=0;i<15;i++){
+    gr.text(mks[i].desc, 450*(i%4) + 225, 450*floor(i/4) + 225);
+  }
+
+
+  focusX = 0;
+  focusY = 0;
+  focusZ = 0;
+
+  eyeVector = createVector();
+  toCenterVector = createVector();
+  sideVector = createVector();
+  upVector = createVector();
+  
+  pointBuf1 = gl.createBuffer();
+  pointBuf2 = gl.createBuffer();
+}
+
+function draw() {
+
+  //if(config.camera){ moveCamera(); }
+  eyeVector.set(posR*sin(posTheta)*sin(posPhi)+focusX,
+                posR*sin(posTheta)*cos(posPhi)+focusY,
+                posR*cos(posTheta)+focusZ);
+  
+  moveCamera();
+  camera(eyeVector.x, eyeVector.y, eyeVector.z, focusX, focusY, focusZ, 0, 0, -1);
+  const m = _gl.uMVMatrix.copy().mat4
