@@ -209,3 +209,60 @@ function draw() {
   moveCamera();
   camera(eyeVector.x, eyeVector.y, eyeVector.z, focusX, focusY, focusZ, 0, 0, -1);
   const m = _gl.uMVMatrix.copy().mat4
+  
+    toCenterVector.set(-m[2], -m[6], -m[10]);
+  sideVector.set(m[0], m[4], m[8]);
+  upVector.set(m[1], m[5], m[9]);
+  
+  gl.enable(gl.DEPTH_TEST);
+  
+  // Set speed
+  bmw.setSpeed(config.speed);
+
+  // Set Walker params
+  bmw.setWalkerParam(
+    config.bodyStructure,
+    config.weight,
+    config.nervousness,
+    config.happiness
+  );
+
+  background(0);
+  directionalLight(255,255,255,0,0,-1);
+	directionalLight(160,160,160,-1,0,0);
+  ambientLight(170);
+  
+  resetShader();
+  
+  fill(255,200,100);
+  noStroke();
+
+  let mks = bmw.getMarkers();
+  let v = bmw.getVectors(0.5 * config.sizeFactor);
+
+  let groundHeight = 9999;
+  for(let p of v){
+    translate(p.x, p.y, p.z);
+    if(config.dot){ 
+			sphere(config.dotSize * config.sizeFactor);
+		}
+    translate(-p.x,-p.y,-p.z);
+    if(p.z < groundHeight){groundHeight = p.z;}
+  }
+
+  fill(0,128,255);
+  translate(0,0,groundHeight);
+  plane(1200);
+  translate(0,0,-groundHeight);
+  
+  stroke(255,242,0);
+  strokeWeight(4);
+  
+  if(config.line){
+    const es = [[0, 1],[1, 2],[2, 3],[3, 4],[1, 5],[5, 6],[6, 7],[1, 8],[8, 9],[9, 10],[10, 11],[8, 12],[12, 13],[13, 14]];
+
+    for(let e of es){
+			  strokeWeight(4);
+      line(v[e[0]].x, v[e[0]].y, v[e[0]].z, v[e[1]].x, v[e[1]].y, v[e[1]].z);
+    }
+  }
