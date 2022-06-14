@@ -266,3 +266,38 @@ function draw() {
       line(v[e[0]].x, v[e[0]].y, v[e[0]].z, v[e[1]].x, v[e[1]].y, v[e[1]].z);
     }
   }
+ gl.disable(gl.DEPTH_TEST);
+  resetShader();
+  shader(myShader);
+  strokeWeight(100);
+  
+  // https://qiita.com/inaba_darkfox/items/6894b4fd54a9dacacf96
+  const uni = myShader.uniforms.uTex;
+  gl.activeTexture(gl.TEXTURE0 + 0);
+  uni.texture = myShader._renderer.getTexture(gr);
+  gl.bindTexture(gl.TEXTURE_2D, uni.texture.glTex);
+  gl.uniform1i(uni.location, 0);
+  
+  if(config.description){ myPoints(); }
+}
+
+
+function myPoints(){
+  const gId = `myPoints|16`;
+  if(!_gl.geometryInHash(gId)){
+    const geom = new p5.Geometry();
+    geom.vertices = [];
+    geom.indices = [];
+    let v = createVector();
+    for(let i = 0; i < 16; i++){
+      let x = 0;
+      let y = 0;
+      let z = 0;
+      geom.vertices.push(v.set(x, y, z).copy());
+      geom.indices.push(i);
+    }
+    buf = this._renderer.createBuffers(gId, geom);
+  }
+  
+  myDrawPoints();
+}
