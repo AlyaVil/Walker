@@ -301,3 +301,59 @@ function myPoints(){
   
   myDrawPoints();
 }
+// myDrawPoints.
+
+function myDrawPoints(){
+  _gl._setPointUniforms(myShader);
+
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, pointBuf1);
+  
+  let values1 = _gl._vToNArray(buf.model.vertices);
+  
+  // values1
+  let data1 = new Float32Array(values1);
+  gl.bufferData(gl.ARRAY_BUFFER, data1, gl.DYNAMIC_DRAW);
+  gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+  
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, pointBuf2);
+  // ベクトルの配列から1列の配列を作る処理
+  let values2 = buf.model.indices; // まんまでOK
+  // values1の中身を持ったFloat32Arrayを作る処理
+  let data2 = new Float32Array(values2);
+  gl.bufferData(gl.ARRAY_BUFFER, data2, gl.STATIC_DRAW);
+  gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+  
+  gl.bindBuffer(gl.ARRAY_BUFFER, pointBuf1);
+  myShader.enableAttrib(myShader.attributes.aPosition, 3);
+  
+  let v = bmw.getVectors(0.5 * config.sizeFactor);
+  for(let i = 0; i < 15; i++){
+    dummy[3*i] = v[i].x;
+    dummy[3*i+1] = v[i].y;
+    dummy[3*i+2] = v[i].z;
+  }
+  gl.bufferSubData(gl.ARRAY_BUFFER, 0, dummy);
+  
+  gl.bindBuffer(gl.ARRAY_BUFFER, pointBuf2);
+  myShader.enableAttrib(myShader.attributes.aIndex, 1);
+
+  gl.drawArrays(gl.Points, 0, buf.model.vertices.length);
+  myShader.unbindShader();
+}
+
+
+// --------------------------------------------------------------- //
+// camera.
+
+function moveCamera(){
+  if(mouseIsPressed){
+    const dx = mouseX - pmouseX;
+    const dy = mouseY - pmouseY;
+    if(mouseButton == LEFT){
+      posPhi += dx * 0.01;
+      posTheta = constrain(posTheta + dy * 0.01, PI*0.001, PI*0.499);
+    }
