@@ -357,3 +357,18 @@ function moveCamera(){
       posPhi += dx * 0.01;
       posTheta = constrain(posTheta + dy * 0.01, PI*0.001, PI*0.499);
     }
+ if(mouseButton == CENTER){
+    
+      focusX += -cos(posPhi) * dx - sin(posPhi) * dy;
+      focusY += sin(posPhi) * dx - cos(posPhi) * dy;
+    }
+  }
+}
+
+function mouseWheel(){
+  posR = constrain(posR + event.delta*0.5, 320, 2560);
+}
+
+function saver(){
+  save("img_" + month() + '-' + day() + '_' + hour() + '-' + minute() + '-' + second() + ".jpg");
+}
